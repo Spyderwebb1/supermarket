@@ -1,0 +1,108 @@
+{% extends "catalog/base.html" %}
+
+{% block extrahead_content %}<script src="https://js.stripe.com/v3/"></script>{% endblock %}
+
+{% block title %}Order Summary{% endblock %}
+
+{% block content %}
+<h1>Order Summary</h1>
+
+{% if error_message %}
+{{ error_message }}
+{% endif %}
+
+{% if order %}
+<p>{{ order.user }}'s order:</p>
+
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Item</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Price</th>
+      </tr>
+    </thead>
+    <tbody>
+        {% for orderitem in order.orderitems.all %}
+        <tr>
+            <th scope="row">{{ forloop.counter }}</th>
+            <td>{{ orderitem.item.name }}</td>
+            <td>
+                <form action="{% url 'catalog:update-cart-item' orderitem.id %}" method="post">
+                    {% csrf_token %}
+                    
+                    <input type="number" id="quantity" name="quantity" min="0" max="20" value="{{ orderitem.quantity }}">
+                    <button type="submit">Update</button>
+                </form>
+            </td>
+            <td>{{ orderitem.get_total_item_price }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <th colspan="3">Total</th>
+            <td>{{ order.get_total }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="container"></div>
+<div class="row">
+<div class="col text-center">
+<form action="" method="post">
+    {% csrf_token %}
+    {{pick_up_form.as_p}}
+    <button type="submit">Update Pick-Up Time</button>
+</form>
+</br>
+</br>
+<button id="checkout-button" type="button" class="btn btn-danger">PROCEED TO CHECKOUT</button>
+
+<p>Or</p>
+<a href="{% url 'catalog:home' %}">Continue Shopping</a>
+</div>
+</div>
+</div>
+
+{% endif %}
+
+<!-- ENTER PUBLIC KEY FOR STRIPE API IN CODE BLOCK BELOW -->
+
+<script type="text/javascript">
+    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    // Create an instance of the Stripe object with your publishable API key
+    var stripe = Stripe('ENTER PUBLIC KEY FOR STRIPE HERE');
+    var checkoutButton = document.getElementById('checkout-button');
+
+    checkoutButton.addEventListener('click', function() {
+      // Create a new Checkout Session using the server-side endpoint you
+      // created in step 3.
+      url = "{% url 'catalog:checkout' %}"
+      console.log(url)
+      fetch(url, {
+        method: 'POST',
+        mode: 'same-origin',
+        headers: {'X-CSRFToken': csrftoken}
+      })
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(session) {
+        return stripe.redirectToCheckout({ sessionId: session.id });
+      })
+      .then(function(result) {
+        // If `redirectToCheckout` fails due to a browser or network
+        // error, you should display the localized error message to your
+        // customer using `error.message`.
+        if (result.error) {
+          alert(result.error.message);
+        }
+      })
+      .catch(function(error) {
+        console.error('Error:', error);
+      });
+    });
+  </script>
+
+
+{% endblock %}

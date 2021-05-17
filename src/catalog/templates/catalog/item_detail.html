@@ -1,0 +1,40 @@
+{% extends "catalog/base.html" %}
+
+{% block title %}Item Detail{% endblock %}
+
+{% block content %}
+<h1 class="text-center">Item Detail</h1>
+
+<div class="container mt-5">
+<div class="card mb-3">
+    <div class="row no-gutters">
+      <div class="col-md-5">
+        <img src="{{ item.photo.url }}" class="card-img" alt="Photo of {{ item.name }}" width=300>
+      </div>
+      <div class="col-md-7">
+        <div class="card-body">
+          <h5 class="card-title">{{ item.name }}</h5>
+          <p>Price:  ${{ item.price }}</p>
+          <p>Category: {{ item.category }}</p>
+        </br>
+          <form action="{% url 'catalog:add-to-cart' item.id %}" method="post" class="d-flex justify-content-left">
+            {% csrf_token %}
+            <!-- Default input -->
+            <!-- <input name="quantity" type="number" value="1" aria-label="Quantity" class="form-control" style="width: 100px"> -->
+            <button class="btn btn-primary btn-md" type="submit">Add to cart
+                <i class="material-icons ml-1">shopping_cart</i>
+            </button>
+        </form>
+        </div>
+        </div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}
+
+

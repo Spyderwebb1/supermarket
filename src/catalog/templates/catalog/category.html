@@ -1,0 +1,10 @@
+{% extends "catalog/base.html" %}
+
+{% block title %}Category items{% endblock %}
+
+{% block content %}
+<h1 class="text-center">{{ category }}</h1>
+
+{% include "catalog/card.html" %}
+
+{% endblock %}

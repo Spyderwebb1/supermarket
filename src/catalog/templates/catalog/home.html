@@ -1,0 +1,15 @@
+{% extends "catalog/base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<div class="jumbotron text-center">
+    <h1 class="display-4">Welcome to DW Supermarket!</h1>
+    <p class="lead">There are currently {{ item_count }} different items to choose from in the store.</p>
+    <hr class="my-4">
+    <p>Browse the different product categories and start filling up your cart!</p>
+    <a class="btn btn-primary btn-lg" href="{% url 'catalog:items-list' %}" role="button">Start Shopping!</a>
+  </div>
+{% endblock %}
+

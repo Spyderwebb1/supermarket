@@ -1,0 +1,21 @@
+<div class="container mt-5">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
+    {% for item in items %}
+    <div class="col mb-3 text-center">
+    <a href="{{ item.get_absolute_url }}">
+    <div class="card" >
+        <div class=row>
+            <div class="col text-center">
+        <img src="{{ item.photo.url }}" alt="Photo of {{ item.name }}" height="150">
+        </div>
+    </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ item.name }}</h5>
+          <p class="card-text">${{ item.price }} ea.</p>
+        </div>
+    </div>
+    </a>  
+    </div>
+    {% endfor %}
+    </div>
+</div>
